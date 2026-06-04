@@ -61,9 +61,8 @@ description
 ---
 
 ## 3. Known Issues
-- [ ] PID oscillates at sharp corners above speed 200
-- [ ] Reverse not yet implemented in `navigation.cpp`
-
+- [ ] example
+- [ ] example
 ---
 
 ## 4. Dependencies
