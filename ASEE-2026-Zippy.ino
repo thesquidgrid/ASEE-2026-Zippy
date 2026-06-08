@@ -1,6 +1,9 @@
 #include "src/DGMotor/DGMotor.h"  
 
-#include "src/example/example.h"  
+#include "src/collisionSense/collisionSense.h"  
+
+#include "src/intake/intake.h"  
+
 
 #include "HardwareSerial.h"
 
@@ -33,11 +36,6 @@ unsigned long lastTime = 0;
 
 DGMotor leftMotor(Serial6, 1);
 DGMotor rightMotor(Serial7, 1);
-
-
-int input1 = 14;
-int input2 = 15;
-int enable = 36;
 
 int speedLeft = 0;
 int speedRight = 0;
@@ -87,15 +85,14 @@ void setup() {
   // lastTime = millis(); //start calculating time passed
 
   //---------Intake---------//
-  pinMode(enable, OUTPUT);
-  pinMode(input1, OUTPUT);
-  pinMode(input2, OUTPUT);
-  digitalWrite(enable, HIGH);
-  digitalWrite(input2, LOW);
  
+  intake_init();
+  collision_init();
 
 }
 
 void loop() {
+
+  collision_detect();
 
 }
