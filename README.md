@@ -1,7 +1,6 @@
 # ASEE-2026-Zippy
-> One-line description of what the robot does.
 
-**Team:** Names here  
+**Team:** //  
 **Board:** Teensy 4.1  
 **Competition:** ASEE 2026  
 
