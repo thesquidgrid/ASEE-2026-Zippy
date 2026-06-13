@@ -134,6 +134,22 @@ Takes in rgb values from color sensor and updates enum `BallColor`
 Returns current `BallColor` value. 
 
 ---
+
+### `mpu9250.h`
+
+**`int16_t readGyroZRaw()`**  
+Takes in rgb values from color sensor and updates enum `BallColor`
+
+**`void calibrateGyroZ()`**  
+Calculates values of the gyroscope at rest. 
+
+**`float updateYaw()`**  
+Acesses gyro readings to get current yaw.
+
+**`void init()`**  
+Initializes and calibrates the gyroscope.
+
+---
 #### Tuning
 | Parameter | Value | Notes             |
 | --------- | ----- | ----------------- |
