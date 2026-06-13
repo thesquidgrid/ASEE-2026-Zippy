@@ -144,6 +144,7 @@ Checks to see if either switch has been pressed. If so, returns `true`.
 | ----------- | ------- | ------ |
 | Servo       | xxx     | xxx    |
 | Teensyduino | xxx     | xxx    |
+| Adafruit_TCS34725 | xxx     | xxx    |
 
 ---
 
