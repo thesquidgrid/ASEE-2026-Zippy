@@ -123,6 +123,17 @@ Initializes pins.
 **`bool collision_detect()`**  
 Checks to see if either switch has been pressed. If so, returns `true`.
 
+---
+
+### `ColorSensor.h`
+
+**`BallColor detectBallColor(uint16_t r, uint16_t g, uint16_t b, uint16_t c)`**  
+Takes in rgb values from color sensor and updates enum `BallColor`
+
+**`const char* ballColorToString(BallColor color)`**  
+Returns current `BallColor` value. 
+
+---
 #### Tuning
 | Parameter | Value | Notes             |
 | --------- | ----- | ----------------- |
