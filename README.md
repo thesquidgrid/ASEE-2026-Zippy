@@ -22,7 +22,7 @@
 4. [Dependencies](#4-dependencies)
 5. [Setup \& Upload](#5-setup--upload)
 
-\---
+---
 
 ## 1\. Pinout
 
@@ -33,7 +33,7 @@
 |33|sw1|Digital IN PULLUP|Front bump switch|
 |34|sw2|Digital IN PULLUP|Rear bump switch|
 
-\---
+---
 
 ### Drive Motors (`drivebase.h` / `DGMotor.h`)
 
@@ -50,7 +50,7 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 |28|Serial7 RX|UART RX|Rear-Right motor RX|rightRear DGMotor|
 |29|Serial7 TX|UART TX|Rear-Right motor TX|rightRear DGMotor|
 
-\---
+---
 
 ### Intake Pinout (`intake.h` / `intake.h`)
 
@@ -62,7 +62,7 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 
 
 
-\---
+---
 
 ### Deposit Pinout (`deposit.h` / `deposit.h`)
 
@@ -89,7 +89,7 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 
 
 
-\---
+---
 
 ### Gyroscope Pinout
 
@@ -100,7 +100,7 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 
 
 
-\---
+---
 
 
 
@@ -124,7 +124,7 @@ Drive all motors backward.
 
 **`stopMotors()`**  
 Stop all Motors
-\---
+---
 
 ### b. `intake.h`
 
@@ -134,7 +134,7 @@ Initializes pins.
 `intake_on()`
 
 `intake_off()`
-\---
+---
 
 ### c. `collisionSense.h`
 
@@ -152,14 +152,14 @@ Checks to see if either switch has been pressed. If so, returns true.
 | KI        | xxx   | Integral gain     |
 | KD        | xxx   | Derivative gain   |
 
-\---
+---
 
 ## 3\. Known Issues
 
 * \[ ] example
 * \[ ] example
 
-\---
+---
 
 ## 4\. Dependencies
 
@@ -170,7 +170,7 @@ Checks to see if either switch has been pressed. If so, returns true.
 
 
 
-\---
+---
 
 ## 5\. Setup \& Upload
 
