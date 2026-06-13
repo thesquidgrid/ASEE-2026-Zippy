@@ -15,7 +15,6 @@ void intake_on(){
   digitalWrite(input1, HIGH);
 }
 
-
 void intake_off(){
   digitalWrite(input1, LOW);
 }
