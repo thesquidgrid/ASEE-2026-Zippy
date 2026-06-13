@@ -6,7 +6,7 @@
 **Board:** Teensy 4.1  
 **Competition:** ASEE 2026
 
-\---
+---
 
 ## Table of Contents
 
