@@ -85,6 +85,8 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 **`.setMotorSpeed(int speed)`**  
 Range: -255 to 255.
 
+---
+
 ### `drivebase.h`
 
 **`initMotors(unsigned long baud)`**  
