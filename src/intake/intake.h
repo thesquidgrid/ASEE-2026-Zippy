@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-
+// --- Pin definitions ---
 const int input1 = 14;
 const int input2 = 15;
 const int enable = 36;

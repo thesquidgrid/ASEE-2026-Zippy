@@ -6,7 +6,7 @@
 **Board:** Teensy 4.1  
 **Competition:** ASEE 2026
 
-\---
+\_\_
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@
 4. [Dependencies](#4-dependencies)
 5. [Setup \& Upload](#5-setup--upload)
 
-\---
+\_\_
 
 ## 1\. Pinout
 
@@ -33,7 +33,7 @@
 |33|sw1|Digital IN PULLUP|Front bump switch|
 |34|sw2|Digital IN PULLUP|Rear bump switch|
 
-\---
+\_\_
 
 ### Drive Motors (`drivebase.h` / `DGMotor.h`)
 
@@ -50,7 +50,7 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 |28|Serial7 RX|UART RX|Rear-Right motor RX|rightRear DGMotor|
 |29|Serial7 TX|UART TX|Rear-Right motor TX|rightRear DGMotor|
 
-\---
+\_\_
 
 ### Intake Pinout (`intake.h` / `intake.h`)
 
@@ -58,11 +58,11 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 |-|-|-|-|
 |14|input1|Digital OUT|H-bridge IN1|
 |15|input2|Digital OUT|H-bridge IN2|
-|36|enable|Digital OUT|H-bridge EN |
+|36|enable|Digital OUT|H-bridge EN|
 
 
 
-\---
+\_\_
 
 ### Deposit Pinout (`deposit.h` / `deposit.h`)
 
@@ -85,11 +85,11 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 
 |Pin|Signal|Type|Connected To|
 |-|-|-|-|
-|33|servo|PWM|Servo PWM |
+|33|servo|PWM|Servo PWM|
 
 
 
-\---
+\_\_
 
 ### Gyroscope Pinout
 
@@ -100,35 +100,49 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 
 
 
-\---
+\_\_
 
 
 
 ## 2\. Function Overview
 
-### a. Motors
+### `drivebase.h`
 
-**`setMotorSpeed(int left, int right)`**  
-Description
+**`initMotors(unsigned long baud)`**  
+Initialize drive base motors.
+
+`.setMotorSpeed(int speed)`
+-255 to 255
+
+`driveForward(int speed)`
+0 - 255
+Drive all motors forward.
+
+`driveBackward(int speed)`
+0 -255
+Drive all motors backward.
 
 **`stopMotors()`**  
-description
+Stop all Motors
+\_\_
 
-\---
+### b. `intake.h`
 
-### b. Gate
+**`intake\_init()`**  
+Initializes pins.
 
-**`readLineSensor()`**  
-description
+`intake\_on()`
 
-\---
+`intake\_off()`
+\_\_
 
-### c. Navigation
+### c. `collisionSense.h`
 
-**`Drive()`**  
-description
+`collision\_init()`
+Initializes pins.
 
-
+`bool collision\_detect()`
+Checks to see if either switch has been pressed. If so, returns true.
 
 #### Tuning
 
@@ -138,23 +152,25 @@ description
 |KI|xxx|Integral gain|
 |KD|xxx|Derivative gain|
 
-\---
+\_\_
 
 ## 3\. Known Issues
 
 * \[ ] example
 * \[ ] example
 
-\---
+\_\_
 
 ## 4\. Dependencies
 
 |Library|Version|Author|
 |-|-|-|
-|xxx|xxx|xxx|
-|xxx|xxx|xxx|
+|Servo|xxx|xxx|
+|Teensyduino|xxx|xxx|
 
-\---
+
+
+\_\_
 
 ## 5\. Setup \& Upload
 
@@ -162,4 +178,6 @@ description
 2. Open `ASEE-2026-Zippy.ino` in Arduino IDE 2.x
 3. Select **Tools → Board → Teensy 4.1**
 4. Click **Upload**
+
+\_\_
 

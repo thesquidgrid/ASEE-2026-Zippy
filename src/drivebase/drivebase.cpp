@@ -16,6 +16,8 @@ void initMotors(unsigned long baud) {
 }
 
 void driveForward(int speed) {
+  speed = abs(speed);
+
   leftRear.setMotorSpeed(speed);
   leftFront.setMotorSpeed(speed);
 
@@ -24,6 +26,8 @@ void driveForward(int speed) {
 }
 
 void driveBackward(int speed) {
+  speed = abs(speed);
+
   leftRear.setMotorSpeed(-speed);
   leftFront.setMotorSpeed(-speed);
 
