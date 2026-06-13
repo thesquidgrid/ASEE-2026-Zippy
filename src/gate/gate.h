@@ -4,13 +4,9 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-// --- Pin definitions ---
-Servo servo;
-servo.attach(12);
-
+void gateInit();
 void openGate();
 void closeGate();
-void intake_off();
 
 
 #endif
