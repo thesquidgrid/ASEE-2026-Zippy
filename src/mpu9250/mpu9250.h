@@ -6,6 +6,7 @@
 int16_t readGyroZRaw();
 void calibrateGyroZ();
 float updateYaw();
-void init();
-
+void mpu_init();
+float apply_limit(float limit, float value);
+float next_control_output(float setpoint);
 #endif

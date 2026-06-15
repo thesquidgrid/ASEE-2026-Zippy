@@ -13,7 +13,6 @@
 
 #include "src/gate/gate.h"  
 
-
 #include "HardwareSerial.h"
 
 #include "Arduino.h"
@@ -40,11 +39,57 @@ void setup() {
   
   //------------Intake------------//
   intake_init();
+
+  mpu_init();
+
+  pinMode(led, OUTPUT);
+  digitalWrite(led, HIGH);
+
 }
 
 void loop() {
-  // drive for one second, then stop permanently
-  driveForward(1000);
-  delay(1000);
+  delay(10);
+  turn(180);
+  
+}
+
+void steer(int setpoint){
+  float p = next_control_output(setpoint);
+  Serial.println(p);
+
+  int leftSpd = 60 - p;
+  int rightSpd = 60 + p;
+
+  Serial.print("YAW: ");
+  Serial.println(updateYaw());
+  
+  if(leftSpd < 0){
+    leftSpd = 0;
+  }
+  if(rightSpd < 0){
+    rightSpd = 0;
+  }
+
+  rightWheels(rightSpd);
+  leftWheels(leftSpd);
+
+  Serial.print("R: "); Serial.println(rightSpd);
+  Serial.print("L: "); Serial.println(leftSpd);
+  Serial.println("-------------");
+}
+
+void turn(int angle){
+  float baseline = updateYaw();
+  if(angle < baseline){
+    leftWheels(60);  
+    while(updateYaw() > angle){  
+    }
+  } else{
+    rightWheels(60);
+    while(updateYaw() < angle){
+    }
+  }
   stopMotors();
 }
+
+

@@ -41,3 +41,13 @@ void stopMotors() {
   leftFront.setMotorSpeed(0);
   rightFront.setMotorSpeed(0);
 }
+
+void rightWheels(int speed){
+  rightRear.setMotorSpeed(-speed);
+  rightFront.setMotorSpeed(-speed);
+}
+
+void leftWheels(int speed){
+  leftRear.setMotorSpeed(speed);
+  leftFront.setMotorSpeed(speed);
+}

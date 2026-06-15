@@ -6,6 +6,9 @@ const uint8_t MPU_ADDR = 0x68;
 float yawAngle = 0.0;      // degrees
 float gyroBiasRawZ = 0.0;  // raw LSB units
 unsigned long lastTime = 0;
+float kp = 25.5;
+float p_limit = 20;
+
 
 // ---------- Low-level: read raw gyro Z ----------
 int16_t readGyroZRaw() {
@@ -53,7 +56,7 @@ float updateYaw() {
   return yawAngle;
 }
 
-void init() {
+void mpu_init() {
   // Wake MPU (PWR_MGMT_1 = 0)
   Wire.beginTransmission(MPU_ADDR);
   Wire.write(0x6B);
@@ -65,3 +68,20 @@ void init() {
   lastTime = micros();
 }
 
+float apply_limit(float limit, float value) {
+    if (value > limit) {
+        return limit;
+    } else if (value < -limit) {
+        return -limit;
+    }
+    return value;
+}
+
+float next_control_output(float setpoint) {
+    float error = setpoint - updateYaw();
+
+    float p_unbounded = error * kp;
+    float p = apply_limit(p_limit, p_unbounded);
+    
+    return p;
+}

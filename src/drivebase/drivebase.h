@@ -12,6 +12,7 @@ void driveForward(int speed);
 void driveBackward(int speed);
 void stopMotors();
 void initMotors(unsigned long baud);
-
+void rightWheels(int speed);
+void leftWheels(int speed);
 
 #endif
