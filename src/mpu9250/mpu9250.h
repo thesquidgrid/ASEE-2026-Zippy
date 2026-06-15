@@ -8,5 +8,5 @@ void calibrateGyroZ();
 float updateYaw();
 void mpu_init();
 float apply_limit(float limit, float value);
-float next_control_output(float setpoint);
+float next_control_output(float setpoint, float kp, float p_limit);
 #endif

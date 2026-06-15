@@ -6,8 +6,7 @@ const uint8_t MPU_ADDR = 0x68;
 float yawAngle = 0.0;      // degrees
 float gyroBiasRawZ = 0.0;  // raw LSB units
 unsigned long lastTime = 0;
-float kp = 25.5;
-float p_limit = 20;
+
 
 
 // ---------- Low-level: read raw gyro Z ----------
@@ -77,7 +76,7 @@ float apply_limit(float limit, float value) {
     return value;
 }
 
-float next_control_output(float setpoint) {
+float next_control_output(float setpoint, float kp, float p_limit) {
     float error = setpoint - updateYaw();
 
     float p_unbounded = error * kp;

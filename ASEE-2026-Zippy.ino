@@ -23,6 +23,7 @@
 
 #include "Adafruit_TCS34725.h"
 
+// straight forward is 25.5 kp and p_limit = 20
 
 int led = 13;
 
@@ -48,48 +49,71 @@ void setup() {
 }
 
 void loop() {
-  delay(10);
-  turn(180);
-  
+
+  int prev_baseline = 180;
+  int baseline = 0;
+
+  for(int i = 0; i<6; i++){
+    int time = millis();
+    
+    while((millis() - time) < 8400){
+      delay(10);
+      steerForward(baseline,25.5,20);
+    }
+   
+    while( abs(updateYaw() - prev_baseline) > .05 ){
+      Serial.println(updateYaw());
+      steerForward(prev_baseline, 25.5, 120);
+    }
+
+    prev_baseline = baseline;
+    baseline = updateYaw();
+
+  }
+
+  //back up
+
+  int time = millis();
+    
+  while((millis() - time) < 1500){
+    delay(10);
+    steerBackward(0,2.25,10);
+  }
+
+  //ram into the corner 
+  int angle = -90;
+  int leftSpd = 30;
+  int rightSpd = -230;
+  rightWheels(rightSpd);
+  leftWheels(leftSpd);
+  while( abs(updateYaw() - angle) > 2 ){
+      Serial.println(updateYaw());
+      
+  }
+
+  stopMotors();
+  while(1);
 }
 
-void steer(int setpoint){
-  float p = next_control_output(setpoint);
-  Serial.println(p);
+void steerForward(int setpoint, float kp, float p_limit){
+  float p = next_control_output(setpoint, kp, p_limit);
 
   int leftSpd = 60 - p;
   int rightSpd = 60 + p;
 
-  Serial.print("YAW: ");
-  Serial.println(updateYaw());
-  
-  if(leftSpd < 0){
-    leftSpd = 0;
-  }
-  if(rightSpd < 0){
-    rightSpd = 0;
-  }
-
   rightWheels(rightSpd);
   leftWheels(leftSpd);
-
-  Serial.print("R: "); Serial.println(rightSpd);
-  Serial.print("L: "); Serial.println(leftSpd);
-  Serial.println("-------------");
 }
 
-void turn(int angle){
-  float baseline = updateYaw();
-  if(angle < baseline){
-    leftWheels(60);  
-    while(updateYaw() > angle){  
-    }
-  } else{
-    rightWheels(60);
-    while(updateYaw() < angle){
-    }
-  }
-  stopMotors();
+void steerBackward(int setpoint, float kp, float p_limit){
+  float p = next_control_output(setpoint, kp, p_limit);
+
+  int leftSpd = 60 - p;
+  int rightSpd = 60 + p;
+
+  rightWheels(-rightSpd);
+  leftWheels(-leftSpd);
 }
+
 
 
