@@ -65,7 +65,7 @@ Each DGMotor controller communicates over a dedicated UART serial port (one per 
 #### Servo Motor
 | Pin | Signal | Type | Connected To |
 | --- | ------ | ---- | ------------ |
-| 33  | servo  | PWM  | Servo signal |
+| 12  | servo  | PWM  | Servo signal |
 
 ---
 
