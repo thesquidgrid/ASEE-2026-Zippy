@@ -1,21 +1,20 @@
 #include "intake.h"
 #include <Arduino.h>
 
+// --- Pin definitions ---
+const int enable = 36;
+
+
 void intake_init(){
   pinMode(enable, OUTPUT);
-  pinMode(input1, OUTPUT);
-  pinMode(input2, OUTPUT);
-
-  digitalWrite(enable, HIGH);
-  digitalWrite(input1, LOW);
-  digitalWrite(input2, LOW);
+  digitalWrite(enable, LOW);
 }
 
 void intake_on(){
-  digitalWrite(input1, HIGH);
+  digitalWrite(enable, HIGH);
 }
 
 void intake_off(){
-  digitalWrite(input1, LOW);
+  digitalWrite(enable, LOW);
 }
 

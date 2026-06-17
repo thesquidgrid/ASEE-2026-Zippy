@@ -3,10 +3,6 @@
 
 #include <Arduino.h>
 
-// --- Pin definitions ---
-const int input1 = 14;
-const int input2 = 15;
-const int enable = 36;
 
 void intake_init();
 void intake_on();
