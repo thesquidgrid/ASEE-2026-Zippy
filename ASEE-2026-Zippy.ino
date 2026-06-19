@@ -1,7 +1,5 @@
 #include "src/DGMotor/DGMotor.h"
 
-#include "src/collisionSense/collisionSense.h"
-
 #include "src/drivebase/drivebase.h"
 
 #include "src/ColorSensor/ColorSensor.h"
@@ -27,6 +25,7 @@ const uint8_t MPU_ADDR = 0x68;
 float yawAngle = 0.0;      // degrees
 float gyroBiasRawZ = 0.0;  // raw LSB units
 unsigned long lastTime = 0;
+
 // Derivative state
 static float prevMeasurement   = 0.0f;
 static bool  hasPrevMeasurement = false;
@@ -46,92 +45,77 @@ void setup() {
   //------------Intake------------//
   intake_init();
   
+  //------------Gate-------------//
+  gateInit();
+  closeGate(); //close gate
 
-
+  //------------LED--------------//
   pinMode(led, OUTPUT);
   digitalWrite(led, HIGH);
   
-  Wire.begin();
-  Serial.begin(115200);
-
-  // Wake MPU (PWR_MGMT_1 = 0)
-  Wire.beginTransmission(MPU_ADDR);
-  Wire.write(0x6B);
-  Wire.write(0);
-  Wire.endTransmission();
-
-  delay(100);
+  //----------Intake-------------//
   intake_on();
+
+  //------------Gyro-------------//
+  gyro_init();
   calibrateGyroZ();
-  lastTime = micros();
-
-  
 }
 
-void flushSerial() {
-  delay(10);
-  while (Serial.available()) Serial.read();
-}
 
 void loop() {
 
   int prev_baseline = 180;
   int baseline = 0;
-  int period = 2400;
+  int period = 0;
 
   for (int i = 0; i < 6; i++) {
-
+  
     int time = millis();
     intake_on();
 
-    while ((millis() - time) < period) {
-      delay(10);
-      steerForward(baseline,20, 22.5, 150); //25.5 20 60
+    if((i % 2) == 0){ 
+      period = 1650; //move forward for period
+    } else{
+      period = 1600; //move backward for period
     }
-    intake_off();
-    period = 2700;
+
+    if((i == 5) || (i == 0)){
+      period = 2000; 
+    } //traverse entire turf
+
+    while ((millis() - time) < period) { 
+      delay(10); //delay to prevent overwhelming the cpu
+      steerForward(baseline, 25.5, 20, 220); //setpoint kp adjustment_max base_speed
+    } //move forward
+
+      
     stopMotors();
     delay(500);
-    
-    
-    while (abs(updateYaw() - prev_baseline) > 1) {
-      delay(10);
-      Serial.println(updateYaw());
-      steerForward(prev_baseline, 12.75, 100, 60);
+    intake_off(); 
+
+    if(i != 5) {
+      while (abs(updateYaw() - prev_baseline) > .5) { 
+        delay(10);
+        steerTurn(prev_baseline, 12.5, 100, 40); //setpoint kp adjustment_max base_speed
+      } //turn around
     }
 
-    prev_baseline = baseline;
-    baseline = updateYaw();
-
-
+    prev_baseline = baseline; 
+    baseline = 180 - prev_baseline;
+  
   }
 
-  //back up
+  park(); //get in corner
 
-  int time = millis();
-
-  while ((millis() - time) < 1500) {
-    delay(10);
-    steerBackward(0, 2.25, 10);
-  }
-
-  //ram into the corner 
-  int angle = -90;
-  int leftSpd = 50;
-  int rightSpd = -255;
-  rightWheels(rightSpd);
-  leftWheels(leftSpd);
-  while (abs(updateYaw() - angle) > 2) {
-    Serial.println(updateYaw());
-
-  }
-
-  stopMotors();
-  while (1);
+  while(1);
+  
 }
+
+//------------- Steering Commands -----------//
 
 //speed bounds = speed +/- p_limit (caps how much the speed can change)
 //speed: baseline speed the wheels will move at.
+//setpoint: point at the gyro we want to steer to and at
 void steerForward(int setpoint, float kp, float p_limit, int speed) {
   float p = next_control_output(setpoint, kp, kp, p_limit);
 
@@ -142,6 +126,17 @@ void steerForward(int setpoint, float kp, float p_limit, int speed) {
   leftWheels(leftSpd);
 }
 
+void steerTurn(int setpoint, float kp, float p_limit, int speed) {
+  float p = next_control_output(setpoint, kp, 0, p_limit); //remove kd for steering
+
+  int leftSpd = speed - p;
+  int rightSpd = speed + p;
+
+  rightWheels(rightSpd);
+  leftWheels(leftSpd);
+}
+
+
 void steerBackward(int setpoint, float kp, float p_limit) {
   float p = next_control_output(setpoint, kp, kp, p_limit);
 
@@ -151,6 +146,7 @@ void steerBackward(int setpoint, float kp, float p_limit) {
   rightWheels(-rightSpd);
   leftWheels(-leftSpd);
 }
+
 // ---------- Low-level: read raw gyro Z ----------
 int16_t readGyroZRaw() {
   Wire.beginTransmission(MPU_ADDR);
@@ -197,7 +193,19 @@ float updateYaw() {
   return yawAngle;
 }
 
-// ---------- Clamp helper ----------
+//-----------init gyro ---------------//
+void gyro_init(){
+  Wire.begin();
+  Serial.begin(115200);
+
+  Wire.beginTransmission(MPU_ADDR);
+  Wire.write(0x6B);
+  Wire.write(0);
+  Wire.endTransmission();
+}
+
+
+// ---------- Clamp helper ---------- //
 float apply_limit(float limit, float value) {
   if (value >  limit) return limit;
   else if (value < -limit) return -limit;
@@ -205,23 +213,41 @@ float apply_limit(float limit, float value) {
 }
 
 
-// ---------- PD controller ----------
+// ---------- PD controller ---------- //
 float next_control_output(float setpoint, float kp, float kd, float p_limit) {
   float measurement = updateYaw();   
-  Serial.println(measurement);
+  
   float error = setpoint - measurement;
   float p_unbounded = error * kp;
   float p = apply_limit(p_limit, p_unbounded);
 
   float d_unbounded = 0.0f;
-  // if (hasPrevMeasurement) {
-  //   d_unbounded = -(measurement - prevMeasurement) * kd;
-  // }
-  // prevMeasurement    = measurement;
-  // hasPrevMeasurement = true;
-  // float d = apply_limit(p_limit, d_unbounded);
+  if (hasPrevMeasurement) {
+    d_unbounded = -(measurement - prevMeasurement) * (kd / 2);
+  }
+  prevMeasurement = measurement;
+  hasPrevMeasurement = true;
+  float d = apply_limit(p_limit, d_unbounded);
+  float output = d + p;
+  return output;
+}
 
-  return p;
+//-----------park car in corner -----------//
+void park(){
+
+  int angle = 270;
+  int leftSpd = -50;
+  int rightSpd = 255;
+  rightWheels(rightSpd);
+  leftWheels(leftSpd);
+
+  while (abs(updateYaw() - angle) > 1) { 
+    //move until the angle is around 1 degree away from the goal angle
+  } 
+
+  driveBackward(-90); //really get in that corner
+  delay(400);
+  stopMotors(); 
 }
 
 

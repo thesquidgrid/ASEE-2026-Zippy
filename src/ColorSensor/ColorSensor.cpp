@@ -1,42 +1,68 @@
-#include "ColorSensor.h"
+#include "colorSensor.h"
+#include <Wire.h>
+#include "Adafruit_TCS34725.h"
+
+static Adafruit_TCS34725 tcs = Adafruit_TCS34725(
+  TCS34725_INTEGRATIONTIME_600MS,
+  TCS34725_GAIN_1X
+);
+
+bool initColorSensor()
+{
+  //sda pin 18
+  //scl pin 19
+  Wire1.begin();
+  Wire1.setClock(400000);
+
+  if (!tcs.begin(TCS34725_ADDRESS, &Wire1)) {
+    return false;
+  }
+
+  return true;
+}
+
+BallColor readBallColor()
+{
+  uint16_t r, g, b, c;
+
+  tcs.getRawData(&r, &g, &b, &c);
+
+  Serial.print(r);
+  Serial.print(",");
+  Serial.print(g);
+  Serial.print(",");
+  Serial.print(b);
+  Serial.print(",");
+  Serial.println(c);
+
+  return detectBallColor(r, g, b, c);
+}
 
 BallColor detectBallColor(uint16_t r, uint16_t g, uint16_t b, uint16_t c)
-{ 
-  //60k saturated light
-  if (c == 0 || c > 60000) {
-    return UNKNOWN;
-  }
+{
 
-  float rn = (float)r / (float)c;
-  float gn = (float)g / (float)c;
-  float bn = (float)b / (float)c;
-
-  // RED
-  if (rn >= 0.55 && rn <= 0.75 &&
-      gn >= 0.16 && gn <= 0.26 &&
-      bn >= 0.13 && bn <= 0.22)
-  {
-    return RED;
-  }
-
-  // BLUE
-  if (rn >= 0.18 && rn <= 0.31 &&
-      gn >= 0.30 && gn <= 0.37 &&
-      bn >= 0.37 && bn <= 0.46)
-  {
-    return BLUE;
-  }
-
-  // WHITE
-  if (rn >= 0.29 && rn <= 0.36 &&
-      gn >= 0.34 && gn <= 0.39 &&
-      bn >= 0.27 && bn <= 0.33)
-  {
+if (c > 750)
+{
     return WHITE;
-  }
-
-  return UNKNOWN;
 }
+
+if ((b < r) && (r > 200))
+{
+    return RED;
+}
+
+
+// Blue top or blue bottom
+if ((b > r) && (c < 460))
+{
+    return BLUE;
+}
+
+
+return UNKNOWN;
+
+}
+
 
 const char* ballColorToString(BallColor color)
 {

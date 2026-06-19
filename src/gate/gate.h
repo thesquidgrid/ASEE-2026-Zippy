@@ -7,6 +7,7 @@
 void gateInit();
 void openGate();
 void closeGate();
+void gateRoutine();
 
 
 #endif
