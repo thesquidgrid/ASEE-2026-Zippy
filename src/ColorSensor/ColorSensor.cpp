@@ -1,6 +1,8 @@
 #include "colorSensor.h"
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
+#include "../gate/gate.h" 
+
 
 static Adafruit_TCS34725 tcs = Adafruit_TCS34725(
   TCS34725_INTEGRATIONTIME_600MS,
