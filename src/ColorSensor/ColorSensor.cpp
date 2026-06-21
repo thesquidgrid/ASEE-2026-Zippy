@@ -58,6 +58,11 @@ if ((b > r) && (c < 500) && (c > 100))
     return BLUE;
 }
 
+if ((abs(b-r) < 20) && (c > 550))
+{
+    return BLUE;
+}
+
 
 return UNKNOWN;
 

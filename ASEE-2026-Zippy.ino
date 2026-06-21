@@ -1,3 +1,5 @@
+// take 3 yaw readings, average, then update control output
+
 #include "src/DGMotor/DGMotor.h"
 
 #include "src/drivebase/drivebase.h"
@@ -87,27 +89,28 @@ void setup() {
 
 void loop() {
 
+  intake_on();
+
   int prev_baseline = 180;
   int baseline = 0;
   int period = 0;
-  intake_on();
   int base_spd = 100;
 
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 6; i++) {
 
     intake_on();
 
     if((i % 2) == 0){ 
-      period = 2150; //move forward for period
+      period = 2000; //move forward for period
     } else{
-      period = 2300; //move backward for period
+      period = 2000; //move backward for period
     }
 
     if(i == 0){
       period = 2300; 
     } //traverse entire turf
-    if (i == 7){
-      period = 2500;
+    if (i == 5){
+      period = 2300;
     } else{
       base_spd = 200;
     }
@@ -127,17 +130,14 @@ void loop() {
     delay(200);
     stopMotors();
 
-    if((i != 7) && (i != 6 )) {
+    if((i != 5)) {
       while (abs(updateYaw() - prev_baseline) > .5) { 
         delay(10);
-        steerTurn(prev_baseline, 9.25, 100, 50); //setpoint kp adjustment_max base_speed
+        //9.5kp
+        steerTurn(prev_baseline, 9 ,110, 60); //setpoint kp adjustment_max base_speed
       } //turn around
-    } if( i == 6) {
-      while (abs(updateYaw() - 165) > .5) { 
-        steerTurn(170, 9.25, 80, 40); //setpoint kp adjustment_max base_speed
-      } //turn around
-
-    }
+    } 
+    
 
     prev_baseline = baseline; 
     baseline = 180 - prev_baseline;
@@ -147,8 +147,6 @@ void loop() {
   intake_off();
   deposit();
   while(1);
-  
-
   
 }
 
@@ -167,13 +165,13 @@ void deposit(){
   stopMotors();
 
   while (abs(updateYaw() - 250) > .5) { 
-        delay(10);
-        steerTurn(250, 12.5, 100, 90); //setpoint kp adjustment_max base_speed
+    delay(10);
+    steerTurn(250, 12.5, 100, 90); //setpoint kp adjustment_max base_speed
   } //turn around
 
   int time = millis();
 
-  while ((millis() - time) < 750) { 
+  while ((millis() - time) < 700) { 
     delay(10); //delay to prevent overwhelming the cpu
     steerForward(270, 25.5, 20, 200); //setpoint kp adjustment_max base_speed
   } //move forward
