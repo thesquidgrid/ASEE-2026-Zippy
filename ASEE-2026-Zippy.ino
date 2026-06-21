@@ -87,7 +87,6 @@ void setup() {
 
 void loop() {
 
-
   int prev_baseline = 180;
   int baseline = 0;
   int period = 0;
@@ -117,7 +116,7 @@ void loop() {
 
     while ((millis() - time) < period) { 
       delay(10); //delay to prevent overwhelming the cpu
-      steerForward(baseline, 22, 10, base_spd); //setpoint kp adjustment_max base_speed
+      steerForward(baseline, 22 , 20, base_spd); //setpoint kp adjustment_max base_speed
     } //move forward
 
     stopMotors();
@@ -131,11 +130,11 @@ void loop() {
     if((i != 7) && (i != 6 )) {
       while (abs(updateYaw() - prev_baseline) > .5) { 
         delay(10);
-        steerTurn(prev_baseline, 12.5, 100, 32); //setpoint kp adjustment_max base_speed
+        steerTurn(prev_baseline, 9.25, 100, 50); //setpoint kp adjustment_max base_speed
       } //turn around
     } if( i == 6) {
       while (abs(updateYaw() - 165) > .5) { 
-        steerTurn(170, 12.5, 80, 30); //setpoint kp adjustment_max base_speed
+        steerTurn(170, 9.25, 80, 40); //setpoint kp adjustment_max base_speed
       } //turn around
 
     }
@@ -198,27 +197,19 @@ void steerForward(int setpoint, float kp, float p_limit, int speed) {
   float p = next_control_output(setpoint, kp, 0 , p_limit);
 
   int leftSpd = speed - p;
-  int rightSpd = speed + p;
+  int rightSpd = speed + p + 5;
 
   rightWheels(rightSpd);
   leftWheels(leftSpd);
 }
 
-void steerDeposit(int setpoint, float kp, float p_limit, int speed, int dir) {
-  float p = next_control_output(setpoint, kp, (kp/3), p_limit);
 
-  int leftSpd = speed - p;
-  int rightSpd = speed + p;
-
-  rightWheels(rightSpd * dir);
-  leftWheels(leftSpd * dir);
-}
 
 void steerTurn(int setpoint, float kp, float p_limit, int speed) {
   float p = next_control_output(setpoint, kp, (kp/3), p_limit); //remove kd for steering
 
   int leftSpd = speed - p;
-  int rightSpd = speed + p;
+  int rightSpd = speed + p + 5;
 
   rightWheels(rightSpd);
   leftWheels(leftSpd);
