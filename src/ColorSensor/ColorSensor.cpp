@@ -1,8 +1,6 @@
-#include "colorSensor.h"
+#include "ColorSensor.h"
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
-#include "../gate/gate.h" 
-
 
 static Adafruit_TCS34725 tcs = Adafruit_TCS34725(
   TCS34725_INTEGRATIONTIME_600MS,
@@ -55,7 +53,7 @@ if ((b < r) && (r > 200))
 
 
 // Blue top or blue bottom
-if ((b > r) && (c < 460))
+if ((b > r) && (c < 500) && (c > 100))
 {
     return BLUE;
 }
