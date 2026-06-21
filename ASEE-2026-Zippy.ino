@@ -94,20 +94,20 @@ void loop() {
   intake_on();
   int base_spd = 100;
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < 8; i++) {
 
     intake_on();
 
     if((i % 2) == 0){ 
       period = 2150; //move forward for period
     } else{
-      period = 2150; //move backward for period
+      period = 2300; //move backward for period
     }
 
     if(i == 0){
       period = 2300; 
     } //traverse entire turf
-    if (i == 5){
+    if (i == 7){
       period = 2500;
     } else{
       base_spd = 200;
@@ -117,7 +117,7 @@ void loop() {
 
     while ((millis() - time) < period) { 
       delay(10); //delay to prevent overwhelming the cpu
-      steerForward(baseline, 22.25, 10, base_spd); //setpoint kp adjustment_max base_speed
+      steerForward(baseline, 22, 10, base_spd); //setpoint kp adjustment_max base_speed
     } //move forward
 
     stopMotors();
@@ -128,14 +128,14 @@ void loop() {
     delay(200);
     stopMotors();
 
-    if((i != 5) && (i != 4 )) {
+    if((i != 7) && (i != 6 )) {
       while (abs(updateYaw() - prev_baseline) > .5) { 
         delay(10);
-        steerTurn(prev_baseline, 12.5, 100, 46); //setpoint kp adjustment_max base_speed
+        steerTurn(prev_baseline, 12.5, 100, 32); //setpoint kp adjustment_max base_speed
       } //turn around
-    } if( i == 4) {
+    } if( i == 6) {
       while (abs(updateYaw() - 165) > .5) { 
-        steerTurn(170, 12.5, 100, 30); //setpoint kp adjustment_max base_speed
+        steerTurn(170, 12.5, 80, 30); //setpoint kp adjustment_max base_speed
       } //turn around
 
     }
@@ -327,6 +327,7 @@ void blueToWhite() {
   driveForward(BIN_MOVE_SPEED);
   delay(ONE_BIN_TIME_MS);
   stopMotors();
+  stopMotors();
   Serial.println("Arrived at WHITE.");
 }
 
@@ -334,6 +335,7 @@ void blueToRed() {
   Serial.println("Movement: BLUE to WHITE");
   driveForward(BIN_MOVE_SPEED);
   delay(ONE_BIN_TIME_MS*2.3);
+  stopMotors();
   stopMotors();
   Serial.println("Arrived at WHITE.");
 }
@@ -343,6 +345,7 @@ void whiteToRed() {
   driveForward(BIN_MOVE_SPEED);
   delay(ONE_BIN_TIME_MS + (ONE_BIN_TIME_MS * .2));
   stopMotors();
+  stopMotors();
   Serial.println("Arrived at RED.");
 }
 
@@ -351,6 +354,7 @@ void whiteToBlue() {
   driveBackward(BIN_MOVE_SPEED);
   delay(ONE_BIN_TIME_MS);
   stopMotors();
+  stopMotors();
   Serial.println("Arrived at BLUE.");
 }
 
@@ -358,6 +362,7 @@ void redToWhite() {
   Serial.println("Movement: RED to WHITE");
   driveBackward(BIN_MOVE_SPEED);
   delay(ONE_BIN_TIME_MS);
+  stopMotors();
   stopMotors();
   Serial.println("Arrived at WHITE.");
 }
@@ -434,7 +439,7 @@ bool dispenseBall(int ballNumber) {
   
   moveToBin(targetBin);
   gateRoutine();
-  delay(1250);
+  delay(1350);
   return true;
 }
 
