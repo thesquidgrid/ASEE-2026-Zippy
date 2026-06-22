@@ -41,7 +41,7 @@ BallColor readBallColor()
 BallColor detectBallColor(uint16_t r, uint16_t g, uint16_t b, uint16_t c)
 {
 
-if (c > 750)
+if (c > 900)
 {
     return WHITE;
 }
